@@ -1,0 +1,8 @@
+*.DS_Store
+*.bak
+*.log
+*.idx
+*.ini
+*.csv
+*.exe
+*.dll
