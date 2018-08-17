@@ -112,40 +112,56 @@ End Function
 Private Function GetHtmlForm(sTxt As String, sFormName As String) As String
 
   Dim lPosStart As Long
+  Dim lPosStart2 As Long
   Dim lPosEnde As Long
   Dim lPos As Long
+  Dim lPosClose As Long
+  Dim lFormOpenCount As Long
+  Dim lFormCloseCount As Long
   
-  lPosStart = InStr(lPos + 1, sTxt, "<form ", vbTextCompare)
+  lPosStart = InStr(lPosStart + 1, sTxt, "<form ", vbTextCompare)
   Do While lPosStart > 0
+    lFormOpenCount = 1
+    lFormCloseCount = 0
+    lPosStart2 = lPosStart
+    lPosEnde = lPosStart
     
-    lPosEnde = InStr(lPosStart, sTxt, "</form>", vbTextCompare)
-    If lPosEnde = 0 Then lPosEnde = 2000000
-    
-'    lPos = InStr(lPosStart, sTxt, "method=""post""", vbTextCompare)
-'    If lPos > lPosStart And lPos < lPosEnde Then 'method=post gefunden
-      
-      lPos = InStr(lPosStart, sTxt, "name=""" & sFormName & """", vbTextCompare)
-      If lPos = 0 Then lPos = InStr(lPosStart, sTxt, "name=" & sFormName & " ", vbTextCompare)
-      ' Wenn die gesuchte Form ohne Namen ist, schauen wir mal ob die jetzige Form überhaupt ein Namens-Attribut hat
-      If lPos = 0 And sFormName = "" Then
-        lPos = InStr(lPosStart, sTxt, ">")
-        If lPos > 0 Then
-          If InStr(lPosStart, sTxt, "name=", vbTextCompare) < lPos Then lPos = 0
-        End If
+    Do While lFormOpenCount > lFormCloseCount
+      lPosEnde = InStr(lPosEnde + 1, sTxt, "</form>", vbTextCompare)
+      If lPosEnde = 0 Then
+        lPosEnde = 2000000
+        Exit Do
       End If
-      If lPos > lPosStart And lPos < lPosEnde Then 'richtige form gefunden
-        GetHtmlForm = Mid(sTxt, lPosStart, lPosEnde - lPosStart + 7)
-        Exit Function
-      Else 'nächste form suchen
-        lPos = lPosEnde
+      lFormCloseCount = lFormCloseCount + 1
+    
+      lPos = InStr(lPosStart2 + 1, sTxt, "<form", vbTextCompare)
+      If lPos > 0 And lPos < lPosEnde Then ' Noch ein öffnendes <form bevor die aktuelle geschlossen wurde
+        lFormOpenCount = lFormOpenCount + 1
+        lPosStart2 = lPos
       End If
-      
-'    Else 'nächste form suchen
-'      lPos = lPosEnde
-'    End If
+    Loop
     
-    lPosStart = InStr(lPos + 1, sTxt, "<form ", vbTextCompare)
+    lPosClose = InStr(lPosStart, sTxt, ">")
+    lPos = InStr(lPosStart, sTxt, "name=""" & sFormName & """", vbTextCompare)
+    If lPos > lPosClose And lPosClose > 0 Then lPos = 0
+    If lPos = 0 Then lPos = InStr(lPosStart, sTxt, "name=" & sFormName & " ", vbTextCompare)
+    If lPos > lPosClose And lPosClose > 0 Then lPos = 0
+    If lPos = 0 Then lPos = InStr(lPosStart, sTxt, "name=" & sFormName & ">", vbTextCompare)
+    If lPos > lPosClose And lPosClose > 0 Then lPos = 0
+    ' Wenn die gesuchte Form ohne Namen ist, schauen wir mal ob die jetzige Form überhaupt ein Namens-Attribut hat
+    If lPos = 0 And sFormName = "" Then
+      lPos = lPosStart + 1
+      If lPosClose > 0 Then
+        lPosStart2 = InStr(lPosStart, sTxt, "name=", vbTextCompare)
+        If lPosStart2 > 0 And lPosStart2 < lPosClose Then lPos = 0
+      End If
+    End If
+    If lPos > lPosStart And lPos < lPosEnde Then 'richtige form gefunden
+      GetHtmlForm = Mid(sTxt, lPosStart, lPosEnde - lPosStart + 7)
+      Exit Function
+    End If
     
+    lPosStart = InStr(lPosStart + 1, sTxt, "<form ", vbTextCompare)
   Loop
 
 End Function
