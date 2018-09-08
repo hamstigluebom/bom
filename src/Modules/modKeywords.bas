@@ -23,7 +23,7 @@ Attribute VB_Name = "modKeywords"
 '*******************************************************
 Option Explicit
 
-Private Const msREQUIREDKEYWORDSVERSION As String = "1.0.143"
+Private Const msREQUIREDKEYWORDSVERSION As String = "1.0.144"
 
 '
 ' Liste der Keywords und die entsprechenden Zugriffe
@@ -48,13 +48,13 @@ Public gsScriptCommand9 As String
 Public gsSiteEncoding As String
 Public gbUseSSL As Boolean
 
-'Datum und Zeit für Artikelseite
+'Datum und Zeit fï¿½r Artikelseite
 Public gsAnsDateFormat1 As String
 Public gsAnsOffsetLocal1_1 As String
 Public gsAnsOffsetLocal1_2 As String
 Public gsarrMonthNames1(12) As String
 
-'Datum und Zeit für Zeitsync
+'Datum und Zeit fï¿½r Zeitsync
 Public gsAnsDateFormat2 As String
 Public gsAnsOffsetLocal2_1 As String
 Public gsAnsOffsetLocal2_2 As String
@@ -421,7 +421,7 @@ LocCINIGetValue oIni, "ItemInfo", "ansShippingEnd2", gsAnsShippingEnd2
 LocCINIGetValue oIni, "ItemInfo", "ansShipping3", gsAnsShipping3
 LocCINIGetValue oIni, "ItemInfo", "ansShippingStart3", gsAnsShippingStart3
 LocCINIGetValue oIni, "ItemInfo", "ansShippingEnd3", gsAnsShippingEnd3
-  
+
 LocCINIGetValue oIni, "ItemInfo", "ansNumPrice", sTmp
 If Val(sTmp) <= 0 Then sTmp = 1
 ReDim gsarrAnsPriceA(1 To Val(sTmp))
@@ -519,17 +519,17 @@ For i = 1 To Val(sTmp)
   LocCINIGetValue oIni, "ProductSearch", "ansPsEncoding" & CStr(i), gsarrAnsPsEncodingA(i)
   LocCINIGetValue oIni, "ProductSearch", "ansPsEdit" & CStr(i), sTmp
   gbarrAnsPsEditA(i) = sTmp
-  
+
   If gsarrAnsPsNameA(i) > "" And gsarrAnsPsLinkA(i) > "" Then
     frmHaupt.mnuProductSearch.Enabled = True
-    
+
     With frmHaupt.mnuls(i)
       .Caption = gsarrAnsPsNameA(i) & IIf(gbarrAnsPsEditA(i), "...", "")
       .Enabled = True
       .Visible = True
     End With
   End If
-  
+
 Next i
 
 For i = 2 To UBound(gsarrAnsToolNameA)
@@ -549,17 +549,17 @@ For i = 1 To Val(sTmp)
   LocCINIGetValue oIni, "Tools", "ansToolEncoding" & CStr(i), gsarrAnsToolEncodingA(i)
   LocCINIGetValue oIni, "Tools", "ansToolEdit" & CStr(i), sTmp
   gbarrAnsToolEditA(i) = sTmp
-  
+
   If gsarrAnsToolNameA(i) > "" And gsarrAnsToolLinkA(i) > "" Then
     frmHaupt.mnuTools.Enabled = True
-    
+
     With frmHaupt.mnult(i)
       .Caption = gsarrAnsToolNameA(i) & IIf(gbarrAnsToolEditA(i), "...", "")
       .Enabled = True
       .Visible = True
     End With
   End If
-  
+
 Next i
 
 Set oIni = Nothing
@@ -567,33 +567,33 @@ Set oIni = Nothing
 End Sub
 
 Public Sub CheckVersionOfKeywordsFile()
-    
+
     Dim sMsg As String
-    
+
     sMsg = gsarrLangTxt(25) & gsarrLangTxt(27)
     sMsg = Replace(sMsg, "%FILE%", gsServerStringsFile)
     sMsg = Replace(sMsg, "%REQVER%", msREQUIREDKEYWORDSVERSION)
     sMsg = Replace(sMsg, "\n", vbCrLf)
-    
+
     If VersionValue(msREQUIREDKEYWORDSVERSION) > VersionValue(GetKeywordsFileVersion()) Then
         If vbNo = MsgBox(sMsg, vbYesNo Or vbDefaultButton2 Or vbQuestion) Then
             End 'MD-Marker
         End If
     End If
-    
+
 End Sub
 Public Function GetKeywordsFileVersion() As String
-    
+
     Dim iTmp As Integer
     Dim sVersion As String
     Dim sFile As String
-    
+
     sFile = App.Path & "\" & gsServerStringsFile
-    
+
     iTmp = INIGetValue(sFile, "Keyfile", "Version", sVersion)
-    
+
     GetKeywordsFileVersion = sVersion
-    
+
 End Function
 
 Private Sub LocIniGetValue(ByVal sSect As String, ByVal sKey As String, ByRef sValue As String)
@@ -617,7 +617,7 @@ Else
     'Leerwerte
     sValue = Replace(sValue, "[NUL]", "")
     'Nicht zu findende Werte
-    sValue = Replace(sValue, "[N/A]", "~*+#-:,!§$%&/(){[]}=")
+    sValue = Replace(sValue, "[N/A]", "~*+#-:,!ï¿½$%&/(){[]}=")
 End If
 End Sub
 
@@ -638,12 +638,12 @@ Else
     'Leerwerte
     sValue = Replace(sValue, "[NUL]", "")
     'Nicht zu findende Werte
-    sValue = Replace(sValue, "[N/A]", "~*+#-:,!§$%&/(){[]}=")
+    sValue = Replace(sValue, "[N/A]", "~*+#-:,!ï¿½$%&/(){[]}=")
 End If
 End Sub
 
 Public Sub KeyAutoSwitch(Optional sTxt As String = "")
-    
+
     Static sCurrentKeys As String ' welche Keys haben wir derzeit wirklich geladen
     Static colKeySwitchCriteria As New Collection
     Dim i As Integer
@@ -656,10 +656,10 @@ Public Sub KeyAutoSwitch(Optional sTxt As String = "")
     Dim lScriptCommandPos As Long
     Dim lDescriptionBeginPos As Long
     Dim lTitlePos As Long
-    
+
     If colKeySwitchCriteria.Count = 0 Then ' erstmal alles initialisieren
         sCurrentKeys = gsServerStringsFile
-        
+
         For i = LBound(gsarrServerStrArr) To UBound(gsarrServerStrArr)
             gsServerStringsFile = gsarrServerStrArr(i)
             If gsServerStringsFile > "" Then
@@ -672,16 +672,16 @@ Public Sub KeyAutoSwitch(Optional sTxt As String = "")
         Next i
         gsServerStringsFile = sCurrentKeys
     End If
-    
+
     For i = LBound(gsarrServerStrArr) To UBound(gsarrServerStrArr)
         If ExistCollectionKey(colKeySwitchCriteria, gsarrServerStrArr(i)) Then
-        
+
             lScriptCommandPos = InStr(1, sTxt, colKeySwitchCriteria(gsarrServerStrArr(i))(0))
             lDescriptionBeginPos = InStr(1, sTxt, colKeySwitchCriteria(gsarrServerStrArr(i))(1))
             If lDescriptionBeginPos = 0 Then lDescriptionBeginPos = Len(sTxt)
-            
+
             lTitlePos = InStr(1, sTxt, colKeySwitchCriteria(gsarrServerStrArr(i))(2))
-            
+
             If lScriptCommandPos > 0 And _
                lScriptCommandPos < lDescriptionBeginPos And _
                lTitlePos > 0 Then
@@ -690,17 +690,17 @@ Public Sub KeyAutoSwitch(Optional sTxt As String = "")
             End If
         End If
     Next i
-    
+
     If bytFoundCnt = 0 And sCurrentKeys <> gsServerStringsFile Then
         Call ReadAllKeywords
     End If
-    
+
     If bytFoundCnt = 1 Then
         sCurrentKeys = gsServerStringsFile ' Originaleinstellung merken
         gsServerStringsFile = gsarrServerStrArr(bytFoundItem) ' umbiegen
         If sCurrentKeys <> gsServerStringsFile Then Call ReadAllKeywords ' und einlesen
-        gsServerStringsFile = sCurrentKeys ' wieder zurückbiegen
+        gsServerStringsFile = sCurrentKeys ' wieder zurï¿½ckbiegen
         sCurrentKeys = gsarrServerStrArr(bytFoundItem) ' und merken was wir derzeit geladen haben
     End If
-    
+
 End Sub
